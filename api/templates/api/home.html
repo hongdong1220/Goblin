@@ -1,0 +1,97 @@
+{% extends "api/layout.html" %}
+{% load static %}
+<!-- Script -->
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'api/home.js' %}"></script>
+{% endblock script %}
+<!-- Body -->
+{% block body %}
+    <!-- Search ticker div========================================================= -->
+    <div id="serach_div">
+        <form id="stock_search_form" class="mb-3" novalidate>
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-auto">
+                    <label for="ticker_input">Look up a ticker:</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto">
+                    <input type="text"
+                           class="form-control"
+                           id="ticker_input"
+                           name="ticker"
+                           placeholder="Stock Ticker"
+                           required>
+                    <div class="invalid-feedback">Please provide a ticker symbol</div>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" id="search_button" class="btn btn-dark">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Stock chart div========================================================= -->
+    <div id="stock_chart_div" hidden>
+        <!--5D, 1M, 3M, 6M, YTD, 1Y, 5Y, Max-->
+        <div class="btn-group"
+             role="group"
+             aria-label="Time Range Selection Buttons">
+            <input type="radio"
+                   class="btn-check"
+                   name="btnradio"
+                   id="5D_button"
+                   onclick="generateChartAndTable()"
+                   checked>
+            <label class="btn btn-outline-primary" for="5D_button">5D</label>
+            <input type="radio"
+                   class="btn-check"
+                   name="btnradio"
+                   id="1M_button"
+                   onclick="generateChartAndTable()">
+            <label class="btn btn-outline-primary" for="1M_button">1M</label>
+            <input type="radio"
+                   class="btn-check"
+                   name="btnradio"
+                   id="3M_button"
+                   onclick="generateChartAndTable()">
+            <label class="btn btn-outline-primary" for="3M_button">3M</label>
+            <input type="radio"
+                   class="btn-check"
+                   name="btnradio"
+                   id="6M_button"
+                   onclick="generateChartAndTable()">
+            <label class="btn btn-outline-primary" for="6M_button">6M</label>
+            <input type="radio"
+                   class="btn-check"
+                   name="btnradio"
+                   id="YTD_button"
+                   onclick="generateChartAndTable()">
+            <label class="btn btn-outline-primary" for="YTD_button">YTD</label>
+            <input type="radio"
+                   class="btn-check"
+                   name="btnradio"
+                   id="1Y_button"
+                   onclick="generateChartAndTable()">
+            <label class="btn btn-outline-primary" for="1Y_button">1Y</label>
+            <input type="radio"
+                   class="btn-check"
+                   name="btnradio"
+                   id="5Y_button"
+                   onclick="generateChartAndTable()">
+            <label class="btn btn-outline-primary" for="5Y_button">5Y</label>
+            <input type="radio"
+                   class="btn-check"
+                   name="btnradio"
+                   id="Max_button"
+                   onclick="generateChartAndTable()">
+            <label class="btn btn-outline-primary" for="Max_button">Max</label>
+        </div>
+        <canvas id="stock_chart"></canvas>
+    </div>
+    <div id="stock_info_box" hidden>
+        <div id="stock_info_header"></div>
+        <div id="stock_info_table"></div>
+    </div>
+{% endblock body %}
