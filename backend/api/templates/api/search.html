@@ -1,0 +1,79 @@
+{% extends "api/layout.html" %}
+{% load static %}
+<!-- Script -->
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'api/search.js' %}"></script>
+{% endblock script %}
+<!-- Body -->
+{% block body %}
+    <!-- Stock chart div========================================================= -->
+    {% if ticker %}
+        <h3 id="err_message" hidden></h3>
+        <h2 id="ticker_name" hidden>{{ ticker }}</h2>
+        <div id="stock_chart_div" hidden>
+            <!--5D, 1M, 3M, 6M, YTD, 1Y, 5Y, Max-->
+            <div class="btn-group"
+                 role="group"
+                 aria-label="Time Range Selection Buttons">
+                <input type="radio"
+                       class="btn-check"
+                       name="btnradio"
+                       id="5D_button"
+                       onclick="generateChartAndTable()"
+                       checked>
+                <label class="btn btn-outline-primary" for="5D_button">5D</label>
+                <input type="radio"
+                       class="btn-check"
+                       name="btnradio"
+                       id="1M_button"
+                       onclick="generateChartAndTable()">
+                <label class="btn btn-outline-primary" for="1M_button">1M</label>
+                <input type="radio"
+                       class="btn-check"
+                       name="btnradio"
+                       id="3M_button"
+                       onclick="generateChartAndTable()">
+                <label class="btn btn-outline-primary" for="3M_button">3M</label>
+                <input type="radio"
+                       class="btn-check"
+                       name="btnradio"
+                       id="6M_button"
+                       onclick="generateChartAndTable()">
+                <label class="btn btn-outline-primary" for="6M_button">6M</label>
+                <input type="radio"
+                       class="btn-check"
+                       name="btnradio"
+                       id="YTD_button"
+                       onclick="generateChartAndTable()">
+                <label class="btn btn-outline-primary" for="YTD_button">YTD</label>
+                <input type="radio"
+                       class="btn-check"
+                       name="btnradio"
+                       id="1Y_button"
+                       onclick="generateChartAndTable()">
+                <label class="btn btn-outline-primary" for="1Y_button">1Y</label>
+                <input type="radio"
+                       class="btn-check"
+                       name="btnradio"
+                       id="5Y_button"
+                       onclick="generateChartAndTable()">
+                <label class="btn btn-outline-primary" for="5Y_button">5Y</label>
+                <input type="radio"
+                       class="btn-check"
+                       name="btnradio"
+                       id="Max_button"
+                       onclick="generateChartAndTable()">
+                <label class="btn btn-outline-primary" for="Max_button">Max</label>
+            </div>
+            <canvas id="stock_chart"></canvas>
+        </div>
+        <div id="stock_info_box" hidden>
+            <div id="stock_info_header"></div>
+            <div id="stock_info_table"></div>
+        </div>
+    {% else %}
+        <h3>Looks like you did not look up a ticker symbol</h3>
+    {% endif %}
+    <!--========================================================================= -->
+{% endblock body %}

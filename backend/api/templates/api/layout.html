@@ -25,6 +25,33 @@
     </head>
     <body>
         <div class="body">
+            <nav id="nav_bar" class="navbar">
+                <a id="brand"class="navbar-brand" href="{% url 'home' %}">Goblin</a>
+                <div id="search_div">
+                    <form id="stock_search_form"
+                          class="mb-3"
+                          method="post"
+                          action="{% url 'search_daily' %}"
+                          novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-auto">
+                                <label for="ticker_input" hidden>Look up a ticker:</label>
+                                <input type="search"
+                                       class="form-control"
+                                       id="ticker_input"
+                                       name="ticker"
+                                       placeholder="Stock Ticker"
+                                       required>
+                                <div class="invalid-feedback">Please provide a ticker symbol</div>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" id="search_button" class="btn btn-dark">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </nav>
             {% block body %}
             {% endblock body %}
         </div>

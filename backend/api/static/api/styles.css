@@ -1,16 +1,21 @@
 .body{
-    margin: 1rem;
     border: 3px solid rgb(0, 0, 0);
 }
 
-#search_div{
+#nav_bar{
     border: 3px solid rgb(48, 252, 75);
+}
+
+#search_div, #brand{
+    border: 3px solid aqua;
 }
 
 #stock_chart_div{
     border: 3px solid rgb(221, 107, 107);
+    width: 75%;
 }
 
 #stock_info_box{
     border: 3px solid aqua;
+    width: 100%;
 }
