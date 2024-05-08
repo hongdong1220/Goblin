@@ -50,6 +50,7 @@ function display_stock() {
                 curr_stock_data = response;
                 curr_ticker = response['symbol'];
                 //Make Chart and Table ========================================================
+                document.getElementById("ticker_name").innerText = ticker;
                 document.getElementById("stock_chart_div").hidden = false;
                 document.getElementById("stock_info_box").hidden = false;
                 document.getElementById("ticker_name").hidden = false;

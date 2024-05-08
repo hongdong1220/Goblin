@@ -95,13 +95,9 @@ def api_search_daily(request: HttpRequest, ticker: str) -> HttpResponse:
                   "Meta Data"]["3. Last Refreshed"])
             print(f"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
-        collection_dict = {}
         document = this_stock_collection.find_one()
-        # take out the _id in document to make it serializable
-        for key, value in document.items():
-            if key != '_id':
-                collection_dict[key] = value
-        return JsonResponse(collection_dict)
+        del document["_id"]
+        return JsonResponse(document)
 
     else:
         # fresh search, need to clone to db
@@ -113,15 +109,11 @@ def api_search_daily(request: HttpRequest, ticker: str) -> HttpResponse:
         try:
             # Collection : [Symbol, Meta, api_function, time_series]
             print("Saving response into db====================================")
-            this_stock_collection.insert_one(alpha_response)
+            # print(alpha_response["_id"])
 
-            collection_dict = {}
-            document = this_stock_collection.find_one()
-            # take out the _id in document to make it serializable
-            for key, value in document.items():
-                if key != '_id':
-                    collection_dict[key] = value
-            return JsonResponse(collection_dict)
+            this_stock_collection.insert_one(alpha_response)
+            del alpha_response["_id"]
+            return JsonResponse(alpha_response)
 
         except Exception as e:
             print("Insertion Error*****************************************")
