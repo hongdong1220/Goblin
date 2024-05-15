@@ -1,4 +1,4 @@
-{% extends "api/layout.html" %}
+{% extends "api/layout_v2.html" %}
 {% load static %}
 <!-- Script -->
 {% block script %}
@@ -6,4 +6,21 @@
 {% endblock script %}
 <!-- Body -->
 {% block body %}
+    <h1>Welcome, try look up a stock!</h1>
+    <div id="under_nav_area">
+        <form method="get"
+              id="stock_search_form"
+              action="{% url 'search_daily' %}"
+              novalidate>
+            <div class="position-relative">
+                <input type="text"
+                       name="ticker"
+                       id="ticker_input"
+                       placeholder="Enter a stock ticker..."
+                       required>
+                <div id="stock_input_tooltips" class="invalid-tooltip">Please provide a ticker symbol</div>
+                <button type="submit" id="search_button">Search</button>
+            </div>
+        </form>
+    </div>
 {% endblock body %}

@@ -2,18 +2,6 @@
 let stock_chart;
 let curr_stock_data;
 let curr_ticker;
-const rangeMap = {
-    //5D, 1M, 3M, 6M, YTD, 1Y, 5Y, Max
-    "5D_button": 5,
-    "1M_button": 30,
-    "3M_button": 90,
-    "6M_button": 180,
-    "YTD_button": "YTD",
-    "1Y_button": 365,
-    "5Y_button": 1825,
-    "Max_button": "Max",
-};
-Object.freeze(rangeMap);
 //==============================================================
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -22,11 +10,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function display_stock() {
     const ticker_txt = document.getElementById("ticker_name");
+
     if (!ticker_txt) {
         return;
     }
     const ticker = (String(ticker_txt.innerHTML)).trim().toUpperCase();
-
 
     console.log(`Javascript TRYING TO CALL API for ${ticker}`);
 
@@ -51,24 +39,21 @@ function display_stock() {
                 curr_ticker = response['symbol'];
                 //Make Chart and Table ========================================================
                 document.getElementById("ticker_name").innerText = ticker;
-                document.getElementById("stock_chart_div").hidden = false;
+                document.getElementById("chart_area").hidden = false;
                 document.getElementById("stock_info_box").hidden = false;
-                document.getElementById("ticker_name").hidden = false;
                 document.getElementById("err_message").hidden = true;
                 generateChartAndTable();
             }).catch(ex => {
                 console.log("CAUGHT EXCEPTION ++++++++++++++++++++++++++++++");
                 console.log(ex);
-                document.getElementById("stock_chart_div").hidden = true;
+                document.getElementById("chart_area").hidden = true;
                 document.getElementById("stock_info_box").hidden = true;
-                document.getElementById("ticker_name").hidden = true;
                 document.getElementById("err_message").hidden = false;
                 document.getElementById("err_message").innerText = `Cant find info on ticker ${ticker}. Check your spelling`;
                 // alert(`Cant find info on ticker ${ticker}. Check your spelling`);
             });
     }
 }
-
 
 function generateChartAndTable() {
     if (curr_stock_data === undefined) {
@@ -131,7 +116,6 @@ function generateChartAndTable() {
     //update table
     createTable(newTableData);
 }
-
 
 function createChart(newData) {
     console.log("Making the line chart")

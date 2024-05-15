@@ -20,6 +20,7 @@
                 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
                 crossorigin="anonymous"></script>
         <link rel="stylesheet" href="{% static 'api/styles.css' %}" />
+        <script src="{% static 'api/navbar.js' %}"></script>
         {% block script %}
         {% endblock script %}
     </head>
@@ -29,13 +30,12 @@
                 <a id="brand"class="navbar-brand" href="{% url 'home' %}">Goblin</a>
                 <div id="search_div">
                     <form id="stock_search_form"
-                          class="mb-3"
                           method="post"
                           action="{% url 'search_daily' %}"
                           novalidate>
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-auto">
+                            <div class="col-auto position-relative">
                                 <label for="ticker_input" hidden>Look up a ticker:</label>
                                 <input type="search"
                                        class="form-control"
@@ -43,7 +43,7 @@
                                        name="ticker"
                                        placeholder="Stock Ticker"
                                        required>
-                                <div class="invalid-feedback">Please provide a ticker symbol</div>
+                                <div id="stock_input_tooltips" class="invalid-tooltip">Please provide a ticker symbol</div>
                             </div>
                             <div class="col-auto">
                                 <button type="submit" id="search_button" class="btn btn-dark">Search</button>

@@ -13,49 +13,29 @@ ticker_symbols_db = client["ticker_symbols_db"]
 myapikey = os.environ.get('my_alphavantage_api_key')
 auth = HTTPBasicAuth('apikey', myapikey)
 
-'''
-    Get Tickers file from NASDAQ
-
-'''
-
+''' Get Tickers file from NASDAQ '''
 nasdaq_tickers_csv_url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&exchange=NASDAQ&download=true"
 nyse_tickers_csv_url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&exchange=NYSE&download=true"
 
-'''
-    Google Chart
-    IBM:
-        1D: https://www.google.com/async/finance_wholepage_chart?ei=S_83ZtucOJrP0PEPrJaD6As&opi=89978449&yv=3&cs=1&async=mid_list:%2Fm%2F07zlw9w,period:1d,interval:300,extended:true,lang:,_id:fw-_S_83ZtucOJrP0PEPrJaD6As_49,_pms:s,_fmt:pc
-        5D: https://www.google.com/async/finance_wholepage_chart?ei=S_83ZtucOJrP0PEPrJaD6As&opi=89978449&yv=3&cs=1&async=mid_list:%2Fm%2F07zlw9w,period:5d,interval:1800,extended:false,lang:,_id:fw-_S_83ZtucOJrP0PEPrJaD6As_49,_pms:s,_fmt:pc
-        1M: https://www.google.com/async/finance_wholepage_chart?ei=S_83ZtucOJrP0PEPrJaD6As&opi=89978449&yv=3&cs=1&async=mid_list:%2Fm%2F07zlw9w,period:1M,interval:86400,extended:false,lang:,_id:fw-_S_83ZtucOJrP0PEPrJaD6As_49,_pms:s,_fmt:pc
-        6M: https://www.google.com/async/finance_wholepage_chart?ei=S_83ZtucOJrP0PEPrJaD6As&opi=89978449&yv=3&cs=1&async=mid_list:%2Fm%2F07zlw9w,period:6M,interval:86400,extended:false,lang:,_id:fw-_S_83ZtucOJrP0PEPrJaD6As_49,_pms:s,_fmt:pc
-        YTD: https://www.google.com/async/finance_wholepage_chart?ei=S_83ZtucOJrP0PEPrJaD6As&opi=89978449&yv=3&cs=1&async=mid_list:%2Fm%2F07zlw9w,period:YTD,interval:86400,extended:false,lang:,_id:fw-_S_83ZtucOJrP0PEPrJaD6As_49,_pms:s,_fmt:pc
-        1Y: https://www.google.com/async/finance_wholepage_chart?ei=S_83ZtucOJrP0PEPrJaD6As&opi=89978449&yv=3&cs=1&async=mid_list:%2Fm%2F07zlw9w,period:1Y,interval:86400,extended:false,lang:,_id:fw-_S_83ZtucOJrP0PEPrJaD6As_49,_pms:s,_fmt:pc
-        5Y: https://www.google.com/async/finance_wholepage_chart?ei=S_83ZtucOJrP0PEPrJaD6As&opi=89978449&yv=3&cs=1&async=mid_list:%2Fm%2F07zlw9w,period:5Y,interval:604800,extended:false,lang:,_id:fw-_S_83ZtucOJrP0PEPrJaD6As_49,_pms:s,_fmt:pc
-        Max: https://www.google.com/async/finance_wholepage_chart?ei=S_83ZtucOJrP0PEPrJaD6As&opi=89978449&yv=3&cs=1&async=mid_list:%2Fm%2F07zlw9w,period:40Y,interval:604800,extended:false,lang:,_id:fw-_S_83ZtucOJrP0PEPrJaD6As_49,_pms:s,_fmt:pc
-    SPY:
-        1D: https://www.google.com/async/finance_wholepage_chart?ei=UAQ4Zr72MKH80PEP_aiZuAM&opi=89978449&sca_esv=2c6693827cfe3781&yv=3&cs=1&async=mid_list:%2Fg%2F1q62h0x10,period:1d,interval:300,extended:true,lang:,_id:fw-_UAQ4Zr72MKH80PEP_aiZuAM_49,_pms:s,_fmt:pc
-        5D: https://www.google.com/async/finance_wholepage_chart?ei=UAQ4Zr72MKH80PEP_aiZuAM&opi=89978449&sca_esv=2c6693827cfe3781&yv=3&cs=1&async=mid_list:%2Fg%2F1q62h0x10,period:5d,interval:1800,extended:false,lang:,_id:fw-_UAQ4Zr72MKH80PEP_aiZuAM_49,_pms:s,_fmt:pc
-        1M: https://www.google.com/async/finance_wholepage_chart?ei=UAQ4Zr72MKH80PEP_aiZuAM&opi=89978449&sca_esv=2c6693827cfe3781&yv=3&cs=1&async=mid_list:%2Fg%2F1q62h0x10,period:1M,interval:86400,extended:false,lang:,_id:fw-_UAQ4Zr72MKH80PEP_aiZuAM_49,_pms:s,_fmt:pc
-        6M: https://www.google.com/async/finance_wholepage_chart?ei=UAQ4Zr72MKH80PEP_aiZuAM&opi=89978449&sca_esv=2c6693827cfe3781&yv=3&cs=1&async=mid_list:%2Fg%2F1q62h0x10,period:6M,interval:86400,extended:false,lang:,_id:fw-_UAQ4Zr72MKH80PEP_aiZuAM_49,_pms:s,_fmt:pc
-        YTD: https://www.google.com/async/finance_wholepage_chart?ei=UAQ4Zr72MKH80PEP_aiZuAM&opi=89978449&sca_esv=2c6693827cfe3781&yv=3&cs=1&async=mid_list:%2Fg%2F1q62h0x10,period:YTD,interval:86400,extended:false,lang:,_id:fw-_UAQ4Zr72MKH80PEP_aiZuAM_49,_pms:s,_fmt:pc
-        1Y: https://www.google.com/async/finance_wholepage_chart?ei=UAQ4Zr72MKH80PEP_aiZuAM&opi=89978449&sca_esv=2c6693827cfe3781&yv=3&cs=1&async=mid_list:%2Fg%2F1q62h0x10,period:1Y,interval:86400,extended:false,lang:,_id:fw-_UAQ4Zr72MKH80PEP_aiZuAM_49,_pms:s,_fmt:pc
-        5Y: https://www.google.com/async/finance_wholepage_chart?ei=UAQ4Zr72MKH80PEP_aiZuAM&opi=89978449&sca_esv=2c6693827cfe3781&yv=3&cs=1&async=mid_list:%2Fg%2F1q62h0x10,period:5Y,interval:604800,extended:false,lang:,_id:fw-_UAQ4Zr72MKH80PEP_aiZuAM_49,_pms:s,_fmt:pc
-        Max: https://www.google.com/async/finance_wholepage_chart?ei=UAQ4Zr72MKH80PEP_aiZuAM&opi=89978449&sca_esv=2c6693827cfe3781&yv=3&cs=1&async=mid_list:%2Fg%2F1q62h0x10,period:40Y,interval:604800,extended:false,lang:,_id:fw-_UAQ4Zr72MKH80PEP_aiZuAM_49,_pms:s,_fmt:pc
-'''
+nyse_collection = ticker_symbols_db["NYSE"]
+nasdaq_collection = ticker_symbols_db["NASDAQ"]
 
 
 def home(request: HttpRequest) -> HttpResponse:
     return render(request, "api/home.html")
 
 
-def search_daily_view(request: HttpRequest):
+def search_daily_view(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         return render(request, "api/search.html",
                       {
                           'ticker': request.POST['ticker'],
                       })
     else:
-        return render(request, "api/search.html")
+        return render(request, "api/search.html",
+                      {
+                          'ticker': request.GET['ticker'],
+                      })
 
 
 def api_search_daily(request: HttpRequest, ticker: str) -> HttpResponse:
@@ -173,6 +153,16 @@ def fetch_from_alpha(ticker: str) -> dict:
     return json_response
 
 
+def api_is_valid_ticker(request: HttpRequest, ticker: str) -> bool:
+    data = {
+        'response': is_valid_ticker(ticker)
+    }
+    print("====================================================")
+    print(data)
+    print("====================================================")
+    return JsonResponse(data)
+
+
 def is_valid_ticker(ticker: str) -> bool:
     """
     check if the ticker is in NYSE or NASDAQ
@@ -184,13 +174,11 @@ def is_valid_ticker(ticker: str) -> bool:
     #         return true,
     #     else
     #         update db (download from web and parse it) then check
-    nyse_collection = ticker_symbols_db["NYSE"]
-    nasdaq_collection = ticker_symbols_db["NASDAQ"]
 
     in_nyse = nyse_collection.find_one({'Symbol': ticker})
     in_nasdaq = nasdaq_collection.find_one({'Symbol': ticker})
 
-    return in_nyse or in_nasdaq
+    return in_nyse != None or in_nasdaq != None
 
 
 '''

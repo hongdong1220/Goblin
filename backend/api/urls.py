@@ -9,4 +9,6 @@ urlpatterns = [
     # Grabs data
     path("api_search_daily/<str:ticker>",
          views.api_search_daily, name="api_search_daily"),
+    path("api_is_valid_ticker/<str:ticker>",
+         views.api_is_valid_ticker, name="api_is_valid_ticker"),
 ]
