@@ -12,20 +12,18 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log("Please enter a ticker!");
             tooltip.innerText = "Please enter a ticker!";
         } else {
-            console.log("await is valid", Date.now());
-
+            // Checks if the input value is a valid ticker. If so search it, 
+            // otherwise stay on the same page 
             let api_response = await fetch(`api_is_valid_ticker/${ticker}`).then(response => response.json());
             let isValid = api_response['response'];
-            console.log("got is valid value", Date.now());
             if (!isValid) {
-                console.log(`inside submit check: ${ticker} doesn't exist! ${isValid}`);
-                ticker_input.value = "";
                 tooltip.innerText = `${ticker} doesn't exist!`;
+                ticker_input.value = "";
             } else {
                 search_form.submit();
             }
+
         }
-        console.log("outside if", Date.now());
         search_form.classList.add('was-validated');
     }, false)
 });

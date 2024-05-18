@@ -1,21 +1,39 @@
-{% extends "api/layout.html" %}
+{% extends "api/layout_v2.html" %}
 {% load static %}
 <!-- Script -->
 {% block script %}
        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+       <script src="{% static 'api/search_bar.js' %}"></script>
        <script src="{% static 'api/search.js' %}"></script>
 {% endblock script %}
 <!-- Body -->
+{% block nav_bar %}
+       <form method="get"
+             id="stock_search_form"
+             action="{% url 'search_daily' %}"
+             novalidate>
+              <div class="d-flex flex-row position-relative">
+                     <input type="text"
+                            name="ticker"
+                            id="ticker_input"
+                            class="form-control"
+                            placeholder="Ticker Symbol"
+                            required>
+                     <div id="stock_input_tooltips" class="invalid-tooltip">Please provide a ticker symbol</div>
+                     <button type="submit" id="search_button" class="btn fw-bold">Search</button>
+              </div>
+       </form>
+{% endblock nav_bar %}
 {% block body %}
        <!-- Stock chart div========================================================= -->
-       <div id="under_nav_area" class="container">
+       <div id="under_nav_area" class="container-fluid row">
               {% if ticker %}
-                     <h3 id="err_message" class="row" hidden></h3>
-                     <div id="chart_area" class="row" hidden>
-                            <div id="company_info_div" class="col-3">
-                                   <h2 id="ticker_name">{{ ticker }}</h2>
-                            </div>
-                            <div id="stock_chart_div" class="col">
+                     <h2 id="err_message" hidden></h2>
+                     <div id="company_info_div" class="col-3">
+                            <h2 id="ticker_name">{{ ticker }}</h2>
+                     </div>
+                     <div id="right_side_area" class="col">
+                            <div id="stock_chart_div" class="row" hidden>
                                    <!--5D, 1M, 3M, 6M, YTD, 1Y, 5Y, Max-->
                                    <div class="btn-group"
                                         role="group"
@@ -72,10 +90,10 @@
                                    </div>
                                    <canvas id="stock_chart"></canvas>
                             </div>
-                     </div>
-                     <div id="stock_info_box" class="row" hidden>
-                            <div id="stock_info_header"></div>
-                            <div id="stock_info_table"></div>
+                            <div id="stock_info_box" class="row" hidden>
+                                   <div id="stock_info_header"></div>
+                                   <div id="stock_info_table"></div>
+                            </div>
                      </div>
               {% else %}
                      <h3>Looks like you did not look up a ticker symbol to get here</h3>

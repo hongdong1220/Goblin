@@ -39,14 +39,14 @@ function display_stock() {
                 curr_ticker = response['symbol'];
                 //Make Chart and Table ========================================================
                 document.getElementById("ticker_name").innerText = ticker;
-                document.getElementById("chart_area").hidden = false;
+                document.getElementById("stock_chart_div").hidden = false;
                 document.getElementById("stock_info_box").hidden = false;
                 document.getElementById("err_message").hidden = true;
                 generateChartAndTable();
             }).catch(ex => {
                 console.log("CAUGHT EXCEPTION ++++++++++++++++++++++++++++++");
                 console.log(ex);
-                document.getElementById("chart_area").hidden = true;
+                document.getElementById("stock_chart_div").hidden = true;
                 document.getElementById("stock_info_box").hidden = true;
                 document.getElementById("err_message").hidden = false;
                 document.getElementById("err_message").innerText = `Cant find info on ticker ${ticker}. Check your spelling`;

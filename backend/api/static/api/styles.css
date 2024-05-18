@@ -1,16 +1,67 @@
-.body, #under_nav_area{
-    border: 3px solid rgb(0, 0, 0);
+html {
+  height: 100%;
+  width: 100%;
 }
 
-#nav_bar{
-    height: 100%;
-    border: 3px solid rgb(48, 252, 75);
+body {
+  height: 100%;
+  background-color: var(--main-bg-color);
 }
 
-#search_div, #brand, #company_info_div, #stock_info_box{
-    border: 3px solid aqua;
+:root {
+  --main-bg-color: #606060;
+  --sec-bg-color: #2c2c2c;
+  --txt-color-bright: #ffffff;
+  --theme-color: #ffd600;
+  --stock-up-color: #41bf49;
+  --stock-down-color: #d9626b;
+  --common-radius: 10px;
 }
 
-#stock_chart_div{
-    border: 3px solid rgb(221, 107, 107);
+#nav_bar {
+  background-color: var(--sec-bg-color);
+}
+
+.navbar-toggler {
+  background-color: var(--main-bg-color);
+}
+
+#search_button {
+  /* top-left | top-right | bottom-right | bottom-left */
+  border-radius: 0 var(--common-radius) var(--common-radius) 0;
+  background-color: var(--theme-color);
+  color: var(--sec-bg-color);
+  /* color: var(--txt-color-bright); */
+}
+
+#ticker_input {
+  /* top-left | top-right | bottom-right | bottom-left */
+  border-radius: var(--common-radius) 0 0 var(--common-radius);
+}
+
+#company_info_div,
+#stock_info_box {
+  border: 3px solid aqua;
+}
+
+#under_nav_area {
+  border: 3px solid rgb(129, 188, 255);
+}
+
+#stock_chart_div {
+  border: 3px solid rgb(221, 107, 107);
+}
+
+#collapsable_links {
+  flex-grow: 0;
+}
+
+#nav_bar_watchlist,
+#nav_bar_account {
+  text-decoration: none;
+  color: var(--txt-color-bright);
+}
+
+#nav_bar_watchlist {
+  margin-right: 16px;
 }

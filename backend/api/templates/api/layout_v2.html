@@ -26,21 +26,41 @@
             Custom files import
         -->
         <link rel="stylesheet" href="{% static 'api/styles.css' %}" />
-        {% comment %} <script src="{% static 'api/navbar.js' %}"></script> {% endcomment %}
         {% block script %}
         {% endblock script %}
     </head>
     <body>
-        <div class="body">
-            <nav id="nav_bar" class="navbar">
-                <a id="brand"class="navbar-brand" href="{% url 'home' %}">Home</a>
-                {% block nav_bar %}
-                {% endblock nav_bar %}
-                <a id="nav_bar_wathclist" href="{% url 'home' %}">Watchlist</a>
-                <a id="nav_bar_account" href="{% url 'home' %}">Account</a>
-            </nav>
-            {% block body %}
-            {% endblock body %}
-        </div>
+        <nav id="nav_bar"
+             class="navbar navbar-expand-md justify-content-between px-3 py-3">
+            <a id="brand_icon" class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'api/images/site-icon.png' %}"
+                     alt="site-icon"
+                     width="50"
+                     height="50">
+            </a>
+            {% block nav_bar %}
+            {% endblock nav_bar %}
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapsable_links"
+                    aria-controls="collapsable_links"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="collapsable_links" class="collapse navbar-collapse">
+                <ul id="collapsable_list"class="navbar-nav">
+                    <li class="nav-item">
+                        <a id="nav_bar_watchlist" class="fw-bold fs-3" href="{% url 'home' %}">Watchlist</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="nav_bar_account" class="fw-bold fs-3"  href="{% url 'home' %}">Account</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        {% block body %}
+        {% endblock body %}
     </body>
 </html>

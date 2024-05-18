@@ -2,25 +2,32 @@
 {% load static %}
 <!-- Script -->
 {% block script %}
-    <script src="{% static 'api/home.js' %}"></script>
+    <script src="{% static 'api/search_bar.js' %}"></script>
 {% endblock script %}
 <!-- Body -->
 {% block body %}
-    <h1>Welcome, try look up a stock!</h1>
-    <div id="under_nav_area">
-        <form method="get"
-              id="stock_search_form"
-              action="{% url 'search_daily' %}"
-              novalidate>
-            <div class="position-relative">
-                <input type="text"
-                       name="ticker"
-                       id="ticker_input"
-                       placeholder="Enter a stock ticker..."
-                       required>
-                <div id="stock_input_tooltips" class="invalid-tooltip">Please provide a ticker symbol</div>
-                <button type="submit" id="search_button">Search</button>
+    <div id="under_nav_area"
+         class="d-flex justify-content-center align-items-center">
+        <div class="d-flex flex-column">
+            <h1>Welcome, try look up a stock!</h1>
+            <!-- position-relative - enables tooltips -->
+            <div class="d-flex justify-content-center">
+                <form method="get"
+                      id="stock_search_form"
+                      action="{% url 'search_daily' %}"
+                      novalidate>
+                    <div class="d-flex flex-row position-relative">
+                        <input type="text"
+                               name="ticker"
+                               id="ticker_input"
+                               class="form-control"
+                               placeholder="Enter a stock ticker..."
+                               required>
+                        <div id="stock_input_tooltips" class="invalid-tooltip">Please provide a ticker symbol</div>
+                        <button type="submit" id="search_button" class="btn fw-bold">Search</button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 {% endblock body %}
