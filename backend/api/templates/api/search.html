@@ -20,22 +20,38 @@
                             placeholder="Ticker Symbol"
                             required>
                      <div id="stock_input_tooltips" class="invalid-tooltip">Please provide a ticker symbol</div>
-                     <button type="submit" id="search_button" class="btn fw-bold">Search</button>
+                     <button type="submit" id="search_button" class="btn yellow_button">Search</button>
               </div>
        </form>
 {% endblock nav_bar %}
 {% block body %}
        <!-- Stock chart div========================================================= -->
-       <div id="under_nav_area" class="container-fluid row">
-              {% if ticker %}
-                     <h2 id="err_message" hidden></h2>
-                     <div id="company_info_div" class="col-3">
+       {% comment %} <div id="under_nav_area" class="d-flex justify-content-center align-items-center"> {% endcomment %}
+       <div id="under_nav_area"
+            class="row justify-content-center mx-0 my-0 py-3 px-3">
+              {% if err_msg %}
+                     <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
+                                 viewBox="0 0 16 16"
+                                 role="img"
+                                 width="50"
+                                 height="50"
+                                 aria-label="Warning:">
+                                   <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                            </svg>
+                            <div>{{ err_msg }}</div>
+                     </div>
+              {% else %}
+                     <div id="company_info_div" class="d-flex col-3 px-3 py-3" hidden>
                             <h2 id="ticker_name">{{ ticker }}</h2>
                      </div>
-                     <div id="right_side_area" class="col">
+                     <div id="right_side_area" class="d-flex col">
+                            <h2 id="err_message" hidden></h2>
                             <div id="stock_chart_div" class="row" hidden>
                                    <!--5D, 1M, 3M, 6M, YTD, 1Y, 5Y, Max-->
-                                   <div class="btn-group"
+                                   <div id="radio_btn_group"
+                                        class="btn-group"
                                         role="group"
                                         aria-label="Time Range Selection Buttons">
                                           <input type="radio"
@@ -44,59 +60,56 @@
                                                  id="5D_button"
                                                  onclick="generateChartAndTable()"
                                                  checked>
-                                          <label class="btn btn-outline-primary" for="5D_button">5D</label>
+                                          <label class="btn yellow_radio_button" for="5D_button">5D</label>
                                           <input type="radio"
                                                  class="btn-check"
                                                  name="btnradio"
                                                  id="1M_button"
                                                  onclick="generateChartAndTable()">
-                                          <label class="btn btn-outline-primary" for="1M_button">1M</label>
+                                          <label class="btn yellow_radio_button" for="1M_button">1M</label>
                                           <input type="radio"
                                                  class="btn-check"
                                                  name="btnradio"
                                                  id="3M_button"
                                                  onclick="generateChartAndTable()">
-                                          <label class="btn btn-outline-primary" for="3M_button">3M</label>
+                                          <label class="btn yellow_radio_button" for="3M_button">3M</label>
                                           <input type="radio"
                                                  class="btn-check"
                                                  name="btnradio"
                                                  id="6M_button"
                                                  onclick="generateChartAndTable()">
-                                          <label class="btn btn-outline-primary" for="6M_button">6M</label>
+                                          <label class="btn yellow_radio_button" for="6M_button">6M</label>
                                           <input type="radio"
                                                  class="btn-check"
                                                  name="btnradio"
                                                  id="YTD_button"
                                                  onclick="generateChartAndTable()">
-                                          <label class="btn btn-outline-primary" for="YTD_button">YTD</label>
+                                          <label class="btn yellow_radio_button" for="YTD_button">YTD</label>
                                           <input type="radio"
                                                  class="btn-check"
                                                  name="btnradio"
                                                  id="1Y_button"
                                                  onclick="generateChartAndTable()">
-                                          <label class="btn btn-outline-primary" for="1Y_button">1Y</label>
+                                          <label class="btn yellow_radio_button" for="1Y_button">1Y</label>
                                           <input type="radio"
                                                  class="btn-check"
                                                  name="btnradio"
                                                  id="5Y_button"
                                                  onclick="generateChartAndTable()">
-                                          <label class="btn btn-outline-primary" for="5Y_button">5Y</label>
+                                          <label class="btn yellow_radio_button" for="5Y_button">5Y</label>
                                           <input type="radio"
                                                  class="btn-check"
                                                  name="btnradio"
                                                  id="Max_button"
                                                  onclick="generateChartAndTable()">
-                                          <label class="btn btn-outline-primary" for="Max_button">Max</label>
+                                          <label class="btn yellow_radio_button" for="Max_button">Max</label>
                                    </div>
                                    <canvas id="stock_chart"></canvas>
                             </div>
                             <div id="stock_info_box" class="row" hidden>
-                                   <div id="stock_info_header"></div>
-                                   <div id="stock_info_table"></div>
+                                   <div id="stock_info_table">Data</div>
                             </div>
                      </div>
-              {% else %}
-                     <h3>Looks like you did not look up a ticker symbol to get here</h3>
               {% endif %}
        </div>
        <!--========================================================================= -->

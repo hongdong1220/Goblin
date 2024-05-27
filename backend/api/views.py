@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseServerError, JsonResponse, HttpRequest
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseServerError, JsonResponse, HttpRequest
 
 from requests.auth import HTTPBasicAuth
 import requests
@@ -10,15 +10,11 @@ import datetime
 stock_daily_data_db, client = utils.get_db_handle()
 ticker_symbols_db = client["ticker_symbols_db"]
 
-myapikey = os.environ.get('my_alphavantage_api_key')
-auth = HTTPBasicAuth('apikey', myapikey)
+my_premium_api_key = os.environ.get('my-alphavantage-api-premium-key')
+
 
 ''' Get Tickers file from NASDAQ '''
-nasdaq_tickers_csv_url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&exchange=NASDAQ&download=true"
-nyse_tickers_csv_url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&exchange=NYSE&download=true"
-
-nyse_collection = ticker_symbols_db["NYSE"]
-nasdaq_collection = ticker_symbols_db["NASDAQ"]
+all_active_tickers_collection = ticker_symbols_db["all_active_tickers"]
 
 
 def home(request: HttpRequest) -> HttpResponse:
@@ -26,16 +22,16 @@ def home(request: HttpRequest) -> HttpResponse:
 
 
 def search_daily_view(request: HttpRequest) -> HttpResponse:
+    parameters = {}
     if request.method == "POST":
-        return render(request, "api/search.html",
-                      {
-                          'ticker': request.POST['ticker'],
-                      })
-    else:
-        return render(request, "api/search.html",
-                      {
-                          'ticker': request.GET['ticker'],
-                      })
+        return HttpResponseNotAllowed(['GET'])
+    elif request.method == "GET":
+        if "ticker" in request.GET:
+            parameters["ticker"] = request.GET['ticker']
+        else:
+            parameters["err_msg"] = "Looks like you did not look up a ticker symbol to get here."
+
+        return render(request, "api/search.html", parameters)
 
 
 def api_search_daily(request: HttpRequest, ticker: str) -> HttpResponse:
@@ -68,8 +64,15 @@ def api_search_daily(request: HttpRequest, ticker: str) -> HttpResponse:
             alpha_response = fetch_from_alpha(ticker)
             if "Error Message" in alpha_response:
                 return HttpResponseServerError(alpha_response["Error Message"])
-            this_stock_collection.delete_one({"symbol": ticker})
-            this_stock_collection.insert_one(alpha_response)
+
+            # enable this if dont want to have outdated info
+            # elif "Information" in alpha_response:
+            #     return HttpResponseServerError("Over Alpha API limit")
+            if "Information" not in alpha_response:
+                # Alpha Vantage limit hit
+                print("no problem fetching and update db")
+                this_stock_collection.delete_one({"symbol": ticker})
+                this_stock_collection.insert_one(alpha_response)
             print(f"updated++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             print(this_stock_collection.find_one()[
                   "Meta Data"]["3. Last Refreshed"])
@@ -83,8 +86,11 @@ def api_search_daily(request: HttpRequest, ticker: str) -> HttpResponse:
         # fresh search, need to clone to db
         alpha_response = fetch_from_alpha(ticker)
         if "Error Message" in alpha_response:
+            print(f"Error in Alpha response: {alpha_response}")
             return HttpResponseServerError(alpha_response["Error Message"])
-
+        elif "Information" in alpha_response:
+            print(f"Over Alpha API limit: {alpha_response}")
+            return HttpResponseServerError("Over Alpha API limit")
         # Try to save response into db
         try:
             # Collection : [Symbol, Meta, api_function, time_series]
@@ -107,34 +113,31 @@ def fetch_from_alpha(ticker: str) -> dict:
     this function tries to fetch daily info about ticker from Alpha Vantage
     returns:
         if ticker is valid:
-            dict - that represents json response received from Alpha Vantage for 'tiker'
+            dict - that represents json response received from Alpha Vantage for 'ticker'
         if ticker is not valid or Alpha Vantage server down
             returns a dict in the format of {"Error Message": reason it failed}
     '''
 
-    # #Demo Param
-    # parameters = {
-    #     # https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=demo
-    #     'function': 'TIME_SERIES_DAILY',
-    #     'symbol': 'IBM',
-    #     'apikey': 'demo'           # Using the auth variable to include the API key
-    # }
-
     api_url = 'https://www.alphavantage.co/query'
     parameters = {
-        'function': 'TIME_SERIES_DAILY',
+        # 'function': 'TIME_SERIES_DAILY',
+        'function': 'TIME_SERIES_DAILY_ADJUSTED',
         'symbol': ticker,
         'outputsize': 'full',  # Optional parameter compact/full
         'datatype': 'json',    # Optional parameter
-        'apikey': auth
+        'apikey': my_premium_api_key,
     }
 
     response = requests.get(url=api_url, params=parameters)
+    print(f"in alpha fetch: {response.url}")
 
     if response.status_code != 200:
         # API end point returns status code 200 despite having invalid parameter into API calls,
         # so whenever the status_code != 200 means their server is down
         print("Alpha server down!====================================")
+        print(response.json())
+        print("======================================================")
+
         return {"Error Message": "Failed to retrieve data because Alpha Server down!"}
 
     json_response = response.json()
@@ -144,6 +147,11 @@ def fetch_from_alpha(ticker: str) -> dict:
         error_msg = json_response["Error Message"]
         print("API ERROR!====================================")
         print(json_response["Error Message"])
+        print("==============================================")
+        return json_response
+    if "Information" in json_response:
+        print("API info ERROR!===============================")
+        print(json_response["Information"])
         print("==============================================")
         return json_response
 
@@ -157,7 +165,7 @@ def api_is_valid_ticker(request: HttpRequest, ticker: str) -> bool:
     data = {
         'response': is_valid_ticker(ticker)
     }
-    print("====================================================")
+    print("api_is_valid_ticker=================================")
     print(data)
     print("====================================================")
     return JsonResponse(data)
@@ -165,33 +173,25 @@ def api_is_valid_ticker(request: HttpRequest, ticker: str) -> bool:
 
 def is_valid_ticker(ticker: str) -> bool:
     """
-    check if the ticker is in NYSE or NASDAQ
-    returns true if it exist on NYSE or NASDAQ, false if otherwise
+    check if the ticker is an active ticker using the list of all active ticker in db
+    returns true if it is an active ticker, false if otherwise
     """
+    # TODO: grab active data online
 
-    # try to look for it in db,
-    #     if yes
-    #         return true,
-    #     else
-    #         update db (download from web and parse it) then check
-
-    in_nyse = nyse_collection.find_one({'Symbol': ticker})
-    in_nasdaq = nasdaq_collection.find_one({'Symbol': ticker})
-
-    return in_nyse != None or in_nasdaq != None
+    ticker_in_db = all_active_tickers_collection.find_one({'symbol': ticker})
+    return ticker_in_db != None
 
 
 '''
 #TODO
-separate api call better
 grab company fundamental data
 grab fed data 
 implement multiple API provider for more data lookup (need to adjust to each API)
-maybe make table span multiple pages
 Stock price doesn't consider stock split
-implement front-end into using react
 
-FAR INTO FUTURE: Train LLM using data
+FAR INTO FUTURE:
+    Neutral Network to predict data using stock price and eco data
+    Train LLM to digest earnings report, and FOMC release
 '''
 
 '''
@@ -199,9 +199,9 @@ FAR INTO FUTURE: Train LLM using data
 Scarp data from API
 Store API into local mongodb
 API call failure handle
-Display Data on screeen (perfer to be a graph)
+Display Data on screen (prefer to be a graph)
 Options for display data (daily, 1 month, range)
 Adjust the range selection based on time not trade days
 update db to newest data
-
+separate api call better
 '''

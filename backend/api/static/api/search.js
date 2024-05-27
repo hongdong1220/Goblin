@@ -41,6 +41,7 @@ function display_stock() {
                 document.getElementById("ticker_name").innerText = ticker;
                 document.getElementById("stock_chart_div").hidden = false;
                 document.getElementById("stock_info_box").hidden = false;
+                document.getElementById("company_info_div").hidden = false;
                 document.getElementById("err_message").hidden = true;
                 generateChartAndTable();
             }).catch(ex => {
@@ -48,6 +49,7 @@ function display_stock() {
                 console.log(ex);
                 document.getElementById("stock_chart_div").hidden = true;
                 document.getElementById("stock_info_box").hidden = true;
+                document.getElementById("company_info_div").hidden = true;
                 document.getElementById("err_message").hidden = false;
                 document.getElementById("err_message").innerText = `Cant find info on ticker ${ticker}. Check your spelling`;
                 // alert(`Cant find info on ticker ${ticker}. Check your spelling`);
@@ -86,9 +88,9 @@ function generateChartAndTable() {
         target_date.setDate(curr_date.getDate());
     }
 
-    console.log("RANGE---------------------------------------------------");
-    console.log(target_date);
-    console.log("End RANGE-----------------------------------------------");
+    // console.log("RANGE---------------------------------------------------");
+    // console.log(target_date);
+    // console.log("End RANGE-----------------------------------------------");
 
     let count = 5;
 
@@ -114,24 +116,26 @@ function generateChartAndTable() {
     //update chart
     createChart(newChartData);
     //update table
-    createTable(newTableData);
+    //createTable(newTableData);
 }
 
 function createChart(newData) {
-    console.log("Making the line chart")
+    // console.log("Making the line chart")
     const data = {
         //line #1
         datasets: [
             {
                 label: `${curr_stock_data['symbol']}`,
                 data: newData,
+                borderColor: "#ffd600",
+                backgroundColor: "#ffd600",
             }
         ]
     };
 
     if (stock_chart) {
-        console.log("CHART OLD DATA #########################################");
-        console.log(stock_chart.data);
+        // console.log("CHART OLD DATA #########################################");
+        // console.log(stock_chart.data);
         stock_chart.data = data;
         stock_chart.update();
     } else {
@@ -141,11 +145,25 @@ function createChart(newData) {
                 type: 'line',
                 data: data,
                 options: {
+                    animation: false,
                     parsing: {
                         xAxisKey: 'date',
                         yAxisKey: 'price'
                     },
-                    // animation: false,
+                    scales: {
+                        x: {
+                            grid: {
+                                display: true,
+                                color: "#606060",
+                            },
+                        },
+                        y: {
+                            grid: {
+                                display: true,
+                                color: "#606060",
+                            },
+                        },
+                    },
                 }
             }
         );
@@ -153,9 +171,9 @@ function createChart(newData) {
 }
 
 function createTable(newData) {
-    console.log("Making a table===================================");
-    console.log(newData);
-    console.log("END of Making a table============================");
+    // console.log("Making a table===================================");
+    // console.log(newData);
+    // console.log("END of Making a table============================");
 
 
     // Clear any content inside #stock_info_header div
